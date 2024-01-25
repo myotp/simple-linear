@@ -24,15 +24,19 @@ defmodule SimpleLinear.LinearRegression do
     |> Nx.to_number()
   end
 
+  # 训练主函数
   def train(epochs, data) do
     init_params = init_random_params()
 
+    # 循环epochs次
     Enum.reduce(1..epochs, init_params, fn _, acc ->
       data
+      # 每次循环当中来200组数据, 再次循环
       |> Enum.take(200)
       |> Enum.reduce(
         acc,
         fn batch, cur_params ->
+          # 每一组数据都是32个具体的数值
           {input, tar} = Enum.unzip(batch)
           x = Nx.tensor(input)
           y = Nx.tensor(tar)
@@ -42,6 +46,7 @@ defmodule SimpleLinear.LinearRegression do
     end)
   end
 
+  # 开局随机选择m,b就可以了
   # y = mx + b
   defn init_random_params do
     key = Nx.Random.key(57)
@@ -51,7 +56,7 @@ defmodule SimpleLinear.LinearRegression do
   end
 
   defn update({m, b} = params, inp, tar, learning_rate) do
-    {grad_m, grad_b} = grad(params, &loss(&1, inp, tar))
+    {grad_m, grad_b} = Nx.Defn.grad(params, &loss(&1, inp, tar))
 
     {
       m - grad_m * learning_rate,
