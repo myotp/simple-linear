@@ -42,9 +42,11 @@ defmodule SimpleLinear.LinearRegression do
     end
   end
 
+  # y = mx + b
   defn init_random_params do
-    m = Nx.random_normal({}, 0.0, 0.1)
-    b = Nx.random_normal({}, 0.0, 0.1)
+    key = Nx.Random.key(57)
+    {m, new_key} = Nx.Random.normal(key, 0.0, 0.1, shape: {1, 1})
+    {b, _new_key} = Nx.Random.normal(new_key, 0.0, 0.1, shape: {1})
     {m, b}
   end
 
